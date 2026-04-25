@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Header } from "@/components/header";
+import { SessionProvider } from "@/stores/session-context";
 
 const halvarBreit = localFont({
   src: [
@@ -43,8 +44,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${halvarBreit.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <Header />
-        {children}
+        <SessionProvider>
+          <Header />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );
