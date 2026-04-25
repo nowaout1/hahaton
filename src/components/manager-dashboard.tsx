@@ -7,26 +7,29 @@ type Employee = {
   id: number;
   name: string;
   alliance: string;
-  status: "submitted" | "pending" | "review";
+  status: "submitted" | "pending";
   progress: number;
 };
 
 const INITIAL_EMPLOYEES: Employee[] = [
   { id: 44921, name: "Иван Иванов", alliance: "Альянс Центр", status: "submitted", progress: 100 },
-  { id: 44922, name: "Петр Петров", alliance: "Альянс Юг", status: "review", progress: 76 },
+  { id: 44922, name: "Петр Петров", alliance: "Альянс Юг", status: "pending", progress: 44 },
   { id: 44923, name: "Мария Соколова", alliance: "Альянс Север", status: "pending", progress: 24 },
   { id: 44924, name: "Анна Котова", alliance: "Альянс Центр", status: "submitted", progress: 100 },
 ];
 
-type Filter = "all" | "submitted" | "pending" | "review";
+type Filter = "all" | "submitted" | "pending";
 
 export function ManagerDashboard() {
   const [filter, setFilter] = useState<Filter>("all");
   const [employees, setEmployees] = useState(INITIAL_EMPLOYEES);
   const [selectedId, setSelectedId] = useState<number>(INITIAL_EMPLOYEES[0].id);
-  const [activity, setActivity] = useState("Выберите сотрудника или примените быстрое действие.");
+  const [activity, setActivity] = useState(
+    "Выберите сотрудника или примените быстрое действие.",
+  );
 
-  const selected = employees.find((employee) => employee.id === selectedId) ?? employees[0];
+  const selected =
+    employees.find((employee) => employee.id === selectedId) ?? employees[0];
 
   const filtered = useMemo(() => {
     if (filter === "all") return employees;
@@ -37,7 +40,6 @@ export function ManagerDashboard() {
     () => ({
       submitted: employees.filter((employee) => employee.status === "submitted").length,
       pending: employees.filter((employee) => employee.status === "pending").length,
-      review: employees.filter((employee) => employee.status === "review").length,
     }),
     [employees],
   );
@@ -49,7 +51,7 @@ export function ManagerDashboard() {
           ? {
               ...employee,
               status,
-              progress: status === "submitted" ? 100 : status === "review" ? 82 : 32,
+              progress: status === "submitted" ? 100 : 34,
             }
           : employee,
       ),
@@ -78,22 +80,24 @@ export function ManagerDashboard() {
               label="Сдали"
             />
             <FilterButton
-              active={filter === "review"}
-              onClick={() => setFilter("review")}
-              label="Проверка"
-            />
-            <FilterButton
               active={filter === "pending"}
               onClick={() => setFilter("pending")}
-              label="Ждут"
+              label="Не сдали"
             />
+            <Button
+              type="button"
+              color="ghost"
+              className="rounded-md border border-white/12 bg-white/4 text-white"
+              onClick={() => setActivity("Excel-экспорт запущен для текущего списка сотрудников.")}
+            >
+              Экспорт Excel
+            </Button>
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <SummaryCard label="Сдали" value={counts.submitted} tone="lime" />
-          <SummaryCard label="На проверке" value={counts.review} tone="magenta" />
-          <SummaryCard label="Не отправили" value={counts.pending} tone="white" />
+          <SummaryCard label="Не сдали" value={counts.pending} tone="white" />
         </div>
 
         <div className="mt-5 overflow-hidden rounded-[16px] border border-white/8">
@@ -139,7 +143,9 @@ export function ManagerDashboard() {
                 </div>
 
                 <div className="flex items-center justify-start md:justify-end">
-                  <span className={`rounded-sm px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.18em] ${statusChip(employee.status)}`}>
+                  <span
+                    className={`rounded-sm px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.18em] ${statusChip(employee.status)}`}
+                  >
                     {statusLabel(employee.status)}
                   </span>
                 </div>
@@ -172,20 +178,10 @@ export function ManagerDashboard() {
             color="ghost"
             className="rounded-md border border-white/12 bg-white/4 text-white"
             onClick={() =>
-              updateEmployee("review", `График ${selected.name} помечен как требующий проверки.`)
-            }
-          >
-            Отправить на проверку
-          </Button>
-          <Button
-            type="button"
-            color="ghost"
-            className="rounded-md border border-white/12 bg-white/4 text-white"
-            onClick={() =>
               updateEmployee("submitted", `График ${selected.name} подтвержден руководителем.`)
             }
           >
-            Подтвердить
+            Отметить как сданный
           </Button>
           <Button
             type="button"
@@ -241,10 +237,9 @@ function SummaryCard({
 }: {
   label: string;
   value: number;
-  tone: "lime" | "magenta" | "white";
+  tone: "lime" | "white";
 }) {
-  const toneClass =
-    tone === "lime" ? "text-[#CCFF00]" : tone === "magenta" ? "text-[#FF0064]" : "text-white";
+  const toneClass = tone === "lime" ? "text-[#CCFF00]" : "text-white";
 
   return (
     <div className="rounded-[14px] border border-white/8 bg-black px-4 py-4">
@@ -258,12 +253,10 @@ function SummaryCard({
 
 function statusChip(status: Employee["status"]) {
   if (status === "submitted") return "bg-[#CCFF00] text-black";
-  if (status === "review") return "bg-[#FF0064] text-white";
   return "bg-white/8 text-white/72";
 }
 
 function statusLabel(status: Employee["status"]) {
-  if (status === "submitted") return "Сдан";
-  if (status === "review") return "Проверка";
-  return "Ожидаем";
+  if (status === "submitted") return "Сдал";
+  return "Не сдал";
 }

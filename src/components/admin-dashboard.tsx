@@ -19,7 +19,15 @@ const INITIAL_USERS: AdminUser[] = [
 
 export function AdminDashboard() {
   const [users, setUsers] = useState(INITIAL_USERS);
-  const [activity, setActivity] = useState("Выберите действие: роль, альянс, верификация или просмотр.");
+  const [alliances, setAlliances] = useState([
+    "Альянс Центр",
+    "Альянс Север",
+    "Альянс Юг",
+  ]);
+  const [pendingChanges, setPendingChanges] = useState(0);
+  const [activity, setActivity] = useState(
+    "Выберите действие: роль, альянс, верификация или просмотр.",
+  );
 
   const stats = useMemo(
     () => ({
@@ -30,12 +38,17 @@ export function AdminDashboard() {
     [users],
   );
 
+  const registerChange = (message: string) => {
+    setPendingChanges((current) => current + 1);
+    setActivity(message);
+  };
+
   const changeAlliance = (userId: number, alliance: string) => {
     setUsers((current) =>
       current.map((user) => (user.id === userId ? { ...user, alliance } : user)),
     );
     const user = users.find((item) => item.id === userId);
-    if (user) setActivity(`Альянс пользователя ${user.name} изменен на ${alliance}.`);
+    if (user) registerChange(`Альянс пользователя ${user.name} изменен на ${alliance}.`);
   };
 
   const changeRole = (userId: number, role: AdminUser["role"]) => {
@@ -43,7 +56,7 @@ export function AdminDashboard() {
       current.map((user) => (user.id === userId ? { ...user, role } : user)),
     );
     const user = users.find((item) => item.id === userId);
-    if (user) setActivity(`Роль пользователя ${user.name} изменена.`);
+    if (user) registerChange(`Роль пользователя ${user.name} изменена.`);
   };
 
   const toggleVerified = (userId: number) => {
@@ -54,7 +67,7 @@ export function AdminDashboard() {
     );
     const user = users.find((item) => item.id === userId);
     if (user) {
-      setActivity(
+      registerChange(
         user.verified
           ? `Верификация пользователя ${user.name} снята.`
           : `Пользователь ${user.name} верифицирован.`,
@@ -65,7 +78,7 @@ export function AdminDashboard() {
   const removeUser = (userId: number) => {
     const user = users.find((item) => item.id === userId);
     setUsers((current) => current.filter((item) => item.id !== userId));
-    if (user) setActivity(`Пользователь ${user.name} удален из списка.`);
+    if (user) registerChange(`Пользователь ${user.name} удален из списка.`);
   };
 
   const addUser = () => {
@@ -73,12 +86,23 @@ export function AdminDashboard() {
     const nextUser: AdminUser = {
       id: nextId,
       name: "Новый пользователь",
-      alliance: "Альянс Центр",
+      alliance: alliances[0],
       role: "operator",
       verified: false,
     };
     setUsers((current) => [nextUser, ...current]);
-    setActivity("Новая запись добавлена в начало списка.");
+    registerChange("Новая запись добавлена в начало списка.");
+  };
+
+  const createAlliance = () => {
+    const nextAlliance = `Альянс ${alliances.length + 1}`;
+    setAlliances((current) => [...current, nextAlliance]);
+    registerChange(`Создан новый альянс: ${nextAlliance}.`);
+  };
+
+  const submitChanges = () => {
+    setPendingChanges(0);
+    setActivity("Изменения отправлены.");
   };
 
   return (
@@ -92,11 +116,27 @@ export function AdminDashboard() {
             Назначайте роли, меняйте альянсы и сразу фиксируйте верификацию без
             переходов на отдельные экраны.
           </p>
+          <div className="mt-3 text-[10px] uppercase tracking-[0.18em] text-white/35">
+            Неотправленных изменений: {pendingChanges}
+          </div>
         </div>
 
-        <Button type="button" color="magenta" className="rounded-sm" onClick={addUser}>
-          + Добавить пользователя
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            color="ghost"
+            className="rounded-sm border border-white/12 bg-white/4 text-white"
+            onClick={createAlliance}
+          >
+            Создать альянс
+          </Button>
+          <Button type="button" color="magenta" className="rounded-sm" onClick={submitChanges}>
+            Отправить изменения
+          </Button>
+          <Button type="button" color="magenta" className="rounded-sm" onClick={addUser}>
+            + Добавить пользователя
+          </Button>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-[16px] border border-white/6">
@@ -122,7 +162,10 @@ export function AdminDashboard() {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="border-b border-white/6 bg-black transition hover:bg-white/[0.02]">
+              <tr
+                key={user.id}
+                className="border-b border-white/6 bg-black transition hover:bg-white/[0.02]"
+              >
                 <td className="px-4 py-4">
                   <div className="flex items-center gap-3">
                     <div className="flex size-10 items-center justify-center rounded-sm border-l-[3px] border-[#FF0064] bg-[#1A1A1A] text-sm font-extrabold uppercase">
@@ -146,9 +189,9 @@ export function AdminDashboard() {
                     onChange={(event) => changeAlliance(user.id, event.target.value)}
                     className="rounded-sm border border-white/10 bg-[#1A1A1A] px-3 py-2 text-xs font-semibold outline-none transition focus:border-[#FF0064]"
                   >
-                    <option>Альянс Центр</option>
-                    <option>Альянс Север</option>
-                    <option>Альянс Юг</option>
+                    {alliances.map((alliance) => (
+                      <option key={alliance}>{alliance}</option>
+                    ))}
                   </select>
                 </td>
                 <td className="px-4 py-4">
