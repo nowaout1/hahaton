@@ -14,7 +14,8 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
+  --accent: #ff3495;
   --font-halvar: "Halvar Breit", sans-serif;
 }
 
@@ -37,4 +38,13 @@ body {
   color: var(--foreground);
   font-family: var(--font-halvar);
   min-height: 100dvh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: var(--accent);
+  color: #ffffff;
 }

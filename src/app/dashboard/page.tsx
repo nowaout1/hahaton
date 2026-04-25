@@ -1,9 +1,5 @@
-import { UserDashboard } from "@/components/user-dashboard";
+import { DashboardWorkspace } from "@/components/dashboard-workspace";
 
-export default function Dashboard() {
-  return (
-    <div className="px-8 py-4">
-      <UserDashboard />
-    </div>
-  );
+export default function DashboardPage() {
+  return <DashboardWorkspace />;
 }

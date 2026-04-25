@@ -1,9 +1,19 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Header() {
+  const pathname = usePathname();
+  const isAuth = pathname.startsWith("/sign_in") || pathname.startsWith("/sign_up");
+
+  if (pathname.startsWith("/dashboard") || isAuth) {
+    return null;
+  }
+
   return (
-    <header className="w-screen h-20 px-8 py-4 items-center flex top-0 sticky bg-white/80 backdrop-blur-xl">
+    <header className="absolute left-5 top-5 z-30 sm:left-8 sm:top-6">
       <Link href="/dashboard">
         <Image
           src="/logo/t2_Logo_Black_sRGB.svg"
