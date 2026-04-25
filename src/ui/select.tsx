@@ -11,10 +11,10 @@ type SelectOption = {
 };
 
 const select = tv({
-  base: "rounded-full outline-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+  base: "w-full cursor-pointer rounded-full border border-black bg-white outline-none transition disabled:cursor-not-allowed disabled:opacity-50 focus:border-[#FF3495] focus:ring-4 focus:ring-[#FF3495]/15",
   variants: {
     color: {
-      primary: "text-gray-900 border",
+      primary: "text-gray-900",
     },
     size: {
       sm: "text-sm px-3 py-1.5",

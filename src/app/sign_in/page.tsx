@@ -1,24 +1,52 @@
+import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/ui/button";
-import { H1 } from "@/ui/h1";
 import { Input } from "@/ui/input";
 import { Link } from "@/ui/link";
 
 export default function SignIn() {
   return (
-    <div className="w-screen h-[80dvh] grid items-center justify-center">
-      <section className="flex flex-col items-center gap-4">
-        <form className="flex flex-col gap-4 items-center">
-          <H1>Авторизация</H1>
-          <div className="grid gap-2">
-            <Input type="email" placeholder="Логин" />
-            <Input type="password" placeholder="Пароль" />
+    <AuthShell
+      eyebrow="Авторизация"
+      title="Войти в систему"
+      subtitle="Чистая авторизация в логике t2: жесткий контраст, крупная типографика и только нужные действия."
+      helperLink={
+        <p>
+          Нет аккаунта?{" "}
+          <Link href="/sign_up">
+            <span className="text-white underline decoration-[#FF3495] underline-offset-4">
+              Регистрация
+            </span>
+          </Link>
+        </p>
+      }
+    >
+      <form className="flex flex-col gap-6">
+        <div className="space-y-2">
+          <div className="text-xs uppercase tracking-[0.16em] text-white/54">
+            Email
           </div>
-          <Button type="submit" className="w-full" color="blue-light">
-            Войти
-          </Button>
-        </form>
-        <Link href="/sign_up">Регистрация</Link>
-      </section>
-    </div>
+          <Input
+            type="email"
+            placeholder="Логин"
+            className="w-full border-white/18 bg-white text-black placeholder:text-black/45"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <div className="text-xs uppercase tracking-[0.16em] text-white/54">
+            Пароль
+          </div>
+          <Input
+            type="password"
+            placeholder="Пароль"
+            className="w-full border-white/18 bg-white text-black placeholder:text-black/45"
+          />
+        </div>
+
+        <Button type="submit" className="mt-2 w-full" color="magenta" size="lg">
+          Войти
+        </Button>
+      </form>
+    </AuthShell>
   );
 }
