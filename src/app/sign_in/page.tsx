@@ -24,7 +24,7 @@ export default function SignIn() {
     try {
       const user = await login({ username, password });
       setUser(user);
-      router.push("/dashboard");
+      router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Не удалось авторизоваться");
     } finally {
