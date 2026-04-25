@@ -1,7 +1,7 @@
 import { twMerge } from "tailwind-merge";
 import { tv } from "tailwind-variants";
 
-type Color = "primary" | "blue-light" | "blue-dark" | "lime" | "ghost";
+type Color = "primary" | "blue-light" | "gray" | "blue-dark" | "lime" | "ghost";
 type Size = "sm" | "md" | "lg";
 
 const button = tv({
@@ -11,8 +11,9 @@ const button = tv({
       primary: "",
       ghost: "hover:bg-black/5",
       lime: "bg-lime-400 text-black",
+      gray: "bg-gray-300 text-black",
       "blue-light": "bg-blue-400 text-white",
-      "blue-dark": "bg-blue-600 text-black",
+      "blue-dark": "bg-blue-600 text-white",
     },
     size: {
       sm: "",
