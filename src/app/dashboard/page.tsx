@@ -1,3 +1,5 @@
-export function Dashboard() {
-  return <div></div>;
+import { DashboardWorkspace } from "@/components/dashboard-workspace";
+
+export default function DashboardPage() {
+  return <DashboardWorkspace />;
 }

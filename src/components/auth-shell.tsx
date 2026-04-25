@@ -9,6 +9,12 @@ type AuthShellProps = {
   children: React.ReactNode;
 };
 
+const FEATURE_LINES = [
+  "Быстрый вход без лишних экранов",
+  "Плотный интерфейс в логике t2",
+  "Четкая подача статусов и действий",
+];
+
 export function AuthShell({
   eyebrow,
   title,
@@ -17,53 +23,63 @@ export function AuthShell({
   children,
 }: AuthShellProps) {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-white">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,52,149,0.18),_transparent_30%),linear-gradient(180deg,_rgba(0,0,0,0.02),_transparent_20%)]" />
+    <main className="min-h-screen bg-[#050505] px-4 pb-8 pt-24 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1400px] overflow-hidden rounded-[24px] border border-white/8 bg-black shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
+        <div className="grid min-h-[calc(100vh-8rem)] grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,0.72fr)]">
+          <section className="relative flex items-center border-b border-white/8 px-5 py-8 sm:px-6 lg:border-b-0 lg:border-r lg:border-white/8 lg:px-8 lg:py-10">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,0,100,0.22),_transparent_32%),linear-gradient(180deg,_rgba(255,255,255,0.02),_transparent_30%)]" />
 
-      <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[56vw] lg:block">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,_rgba(255,52,149,0.22),_transparent_26%)]" />
-        <div className="absolute inset-y-0 left-[6%] w-[70%]">
-          <Image
-            src="/images/dedfoncrutoi.png"
-            alt="Персонаж с планшетом и календарем графика"
-            fill
-            priority
-            className="object-contain object-bottom opacity-[0.95]"
-          />
-        </div>
-        <div className="absolute inset-y-0 left-0 w-[72%] bg-gradient-to-r from-white via-white/70 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white via-white/75 to-transparent" />
-      </div>
+            <div className="relative flex w-full max-w-[620px] flex-col gap-8">
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/logo/t2_Logo_White_sRGB.svg"
+                  alt="t2 logo"
+                  width={40}
+                  height={40}
+                />
+                <span className="inline-flex rounded-sm bg-[#FF0064] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-white">
+                  {eyebrow}
+                </span>
+              </div>
 
-      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[38vw] border-l border-black/8 bg-black lg:block" />
+              <div className="space-y-4">
+                <H1 className="max-w-[11ch] text-[clamp(3rem,6vw,6rem)] text-white">
+                  {title}
+                </H1>
+                <p className="max-w-[38ch] text-sm leading-6 text-white/58 sm:text-base">
+                  {subtitle}
+                </p>
+              </div>
 
-      <div className="relative mx-auto grid min-h-screen max-w-[1440px] grid-cols-1 px-5 pb-8 pt-20 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,0.72fr)] lg:px-8 lg:pt-24">
-        <section className="flex items-start py-6 lg:py-12">
-          <div className="flex w-full flex-col gap-8 lg:max-w-[620px] lg:pr-12">
-            <div className="flex max-w-[560px] flex-col gap-5">
-              <span className="inline-flex w-fit rounded-full border border-black/15 px-4 py-2 text-xs uppercase tracking-[0.18em] text-black/60">
-                {eyebrow}
-              </span>
-              <H1 className="max-w-[10ch] text-[clamp(3rem,6vw,6.5rem)]">
-                {title}
-              </H1>
-              <p className="max-w-[36ch] text-base leading-6 text-black/62 sm:text-lg">
-                {subtitle}
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="flex items-start justify-end py-6 lg:py-12">
-          <div className="w-full max-w-[560px] rounded-[36px] border border-black/10 bg-white p-4 shadow-[0_32px_80px_rgba(0,0,0,0.08)] sm:p-6 lg:p-8">
-            <div className="rounded-[28px] bg-black p-6 text-white sm:p-8">
-              {children}
-              <div className="mt-6 border-t border-white/12 pt-5 text-sm text-white/72">
-                {helperLink}
+              <div className="grid gap-3 sm:grid-cols-3">
+                {FEATURE_LINES.map((line, index) => (
+                  <div
+                    key={line}
+                    className="rounded-[16px] border border-white/8 bg-[#111111] px-4 py-4"
+                  >
+                    <div className="text-[10px] uppercase tracking-[0.16em] text-white/35">
+                      0{index + 1}
+                    </div>
+                    <div className="mt-3 text-sm font-bold uppercase leading-5 text-white">
+                      {line}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <section className="flex items-center justify-end bg-[#0B0B0B] px-4 py-6 sm:px-5 sm:py-8 lg:px-6 lg:py-10">
+            <div className="w-full max-w-[560px] rounded-[22px] border border-white/8 bg-black p-4 sm:p-5 lg:p-6">
+              <div className="rounded-[18px] border border-white/8 bg-[#111111] p-5 sm:p-6">
+                {children}
+                <div className="mt-6 border-t border-white/10 pt-5 text-sm text-white/72">
+                  {helperLink}
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
     </main>
   );

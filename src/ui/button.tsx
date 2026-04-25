@@ -4,6 +4,7 @@ import { tv } from "tailwind-variants";
 type Color =
   | "primary"
   | "blue-light"
+  | "gray"
   | "blue-dark"
   | "lime"
   | "ghost"
@@ -19,8 +20,9 @@ const button = tv({
       black: "bg-black text-white focus-visible:ring-black",
       ghost: "text-black hover:bg-black/5 focus-visible:ring-black/25",
       lime: "bg-lime-400 text-black",
+      gray: "bg-gray-300 text-black",
       "blue-light": "bg-blue-400 text-white",
-      "blue-dark": "bg-blue-600 text-black",
+      "blue-dark": "bg-blue-600 text-white",
       magenta:
         "bg-[#FF3495] text-white shadow-[0_10px_30px_rgba(255,52,149,0.28)] hover:brightness-95 focus-visible:ring-[#FF3495]",
     },
