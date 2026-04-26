@@ -7,12 +7,12 @@ import type {
 
 export const fetchMySchedule = async () => {
   const response =
-    await api.get<Record<string, ScheduleDayPayload>>("/api/schedules/me");
+    await api.get<Record<string, ScheduleDayPayload>>("/schedules/me");
   return response;
 };
 
 export const updateMySchedule = async (payload: ScheduleBulkUpdate) =>
-  api.put<Record<string, ScheduleDayPayload>>("/api/schedules/me", payload);
+  api.put<Record<string, ScheduleDayPayload>>("/schedules/me", payload);
 
 export const fetchUserSchedule = async (userId: number) =>
-  api.get<ScheduleForUser>(`/api/schedules/by-user/${userId}`);
+  api.get<ScheduleForUser>(`/schedules/by-user/${userId}`);
