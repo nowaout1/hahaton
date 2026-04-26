@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { AdminDashboard } from "@/components/admin-dashboard";
 import { ManagerDashboard } from "@/components/manager-dashboard";
 import { UserDashboard } from "@/components/user-dashboard";
@@ -19,7 +19,7 @@ const ROLE_COPY: Record<Role, { badge: string; title: string; subtitle: string }
   },
   manager: {
     badge: "Контроль команды",
-    title: "Панель руководителя",
+    title: "Панель менеджера",
     subtitle: "Следите за заполнением графиков, выбирайте сотрудников и пробивайтесь по статусам без нагромождения.",
   },
   admin: {
@@ -37,13 +37,12 @@ function mapUserRole(role: UserRole | undefined): Role {
 
 export function DashboardWorkspace() {
   const { user, hydrateUser, logout } = useSession();
-  const [manualRole, setManualRole] = useState<Role | null>(null);
 
   useEffect(() => {
     hydrateUser();
   }, [hydrateUser]);
 
-  const role = manualRole ?? mapUserRole(user?.role);
+  const role = mapUserRole(user?.role);
   const copy = useMemo(() => ROLE_COPY[role], [role]);
 
   return (
@@ -54,7 +53,7 @@ export function DashboardWorkspace() {
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div className="flex max-w-[720px] flex-col gap-4">
                 <div className="flex items-center gap-3">
-                  <Image src="/logo/t2_Logo_White_sRGB.svg" alt="t2 logo" width={40} height={40} />
+                  <Image src="/logo/t2_Logo_White_sRGB.svg" alt="t2 logo" width={40} height={40} className="h-10 w-auto" />
                   <span className="inline-flex w-fit rounded-sm bg-[#FF0064] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-white">
                     {copy.badge}
                   </span>
@@ -67,9 +66,9 @@ export function DashboardWorkspace() {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                <RoleButton active={role === "user"} onClick={() => setManualRole("user")} label="Сотрудник" />
-                <RoleButton active={role === "manager"} onClick={() => setManualRole("manager")} label="Руководитель" />
-                <RoleButton active={role === "admin"} onClick={() => setManualRole("admin")} label="Админ" />
+                <span className="inline-flex min-w-[148px] items-center justify-center rounded-md bg-[#FF0064] px-4 py-3 text-[10px] font-extrabold uppercase tracking-[0.18em] text-white">
+                  {role === "user" ? "Сотрудник" : role === "manager" ? "Менеджер" : "Админ"}
+                </span>
                 <Button type="button" color="ghost" className="min-w-[148px] rounded-md border border-white/12 bg-white/4 text-white" onClick={logout}>
                   Выйти
                 </Button>
@@ -78,25 +77,12 @@ export function DashboardWorkspace() {
           </div>
 
           <div className="p-3 sm:p-4 lg:p-5">
-            {role === "user" && <UserDashboard />}
-            {role === "manager" && <ManagerDashboard />}
+            {role === "user" && <UserDashboard userName={user?.full_name ?? user?.email} isVerified={user?.is_verified} />}
+            {role === "manager" && <ManagerDashboard currentUserId={user?.id} />}
             {role === "admin" && <AdminDashboard />}
           </div>
         </section>
       </div>
     </main>
-  );
-}
-
-function RoleButton({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
-  return (
-    <Button
-      type="button"
-      onClick={onClick}
-      color={active ? "magenta" : "ghost"}
-      className={active ? "min-w-[148px] rounded-md border border-transparent" : "min-w-[148px] rounded-md border border-white/12 bg-white/4 text-white hover:bg-white/8"}
-    >
-      {label}
-    </Button>
   );
 }
