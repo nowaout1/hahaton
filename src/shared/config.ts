@@ -1,2 +1,1 @@
-export const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://138.124.182.5:58000";
+export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api";

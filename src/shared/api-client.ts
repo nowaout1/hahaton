@@ -26,6 +26,7 @@ function buildErrorMessage(errorText: string, status: number) {
   try {
     const parsed = JSON.parse(errorText) as {
       detail?: string | Array<{ msg?: string }>;
+      error?: string;
     };
 
     if (typeof parsed.detail === "string" && parsed.detail) {
@@ -34,6 +35,10 @@ function buildErrorMessage(errorText: string, status: number) {
 
     if (Array.isArray(parsed.detail) && parsed.detail[0]?.msg) {
       return parsed.detail[0].msg;
+    }
+
+    if (typeof parsed.error === "string" && parsed.error) {
+      return parsed.error;
     }
   } catch {
     // Fall back to raw text below.

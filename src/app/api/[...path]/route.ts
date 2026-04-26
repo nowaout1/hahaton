@@ -20,17 +20,41 @@ async function handler(request: Request, context: { params: Promise<{ path: stri
     init.body = await request.arrayBuffer();
   }
 
-  const backendResponse = await fetch(targetUrl, init);
-  const responseHeaders = new Headers(backendResponse.headers);
-  responseHeaders.delete("content-encoding");
-  responseHeaders.delete("content-length");
-  responseHeaders.set("access-control-allow-origin", request.headers.get("origin") ?? "*");
+  try {
+    const backendResponse = await fetch(targetUrl, init);
+    if (backendResponse.status >= 500) {
+      const errorBody = await backendResponse.clone().text().catch(() => "");
+      console.error("[api-proxy] upstream 5xx", {
+        method: request.method,
+        targetUrl,
+        status: backendResponse.status,
+        statusText: backendResponse.statusText,
+        body: errorBody,
+      });
+    }
 
-  return new Response(backendResponse.body, {
-    status: backendResponse.status,
-    statusText: backendResponse.statusText,
-    headers: responseHeaders,
-  });
+    const responseHeaders = new Headers(backendResponse.headers);
+    responseHeaders.delete("content-encoding");
+    responseHeaders.delete("content-length");
+    responseHeaders.set("access-control-allow-origin", request.headers.get("origin") ?? "*");
+
+    return new Response(backendResponse.body, {
+      status: backendResponse.status,
+      statusText: backendResponse.statusText,
+      headers: responseHeaders,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to reach backend service";
+
+    return Response.json(
+      {
+        detail: "Backend service is temporarily unavailable",
+        error: message,
+        target: targetUrl,
+      },
+      { status: 502 },
+    );
+  }
 }
 
 export { handler as GET, handler as POST, handler as PUT, handler as DELETE, handler as PATCH, handler as OPTIONS };
