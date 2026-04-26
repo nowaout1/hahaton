@@ -48,7 +48,7 @@ export default function SignUp() {
     <AuthShell
       eyebrow="Регистрация"
       title="Создать аккаунт"
-      subtitle="Регистрация теперь использует тот же список альянсов, который поддерживается во фронте и назначается пользователям через API."
+      subtitle="Палнирование графика еще никогда не было таким простым. Создайте аккаунт, чтобы начать."
       helperLink={
         <p>
           Уже есть аккаунт?{" "}
@@ -77,7 +77,7 @@ export default function SignUp() {
 
         <div className="space-y-2">
           <div className="text-[10px] uppercase tracking-[0.18em] text-white/40">Email</div>
-          <Input type="email" placeholder="Логин" value={email} onChange={(event) => setEmail(event.target.value)} required className="w-full rounded-[14px] border-white/10 bg-black px-4 py-4 text-white placeholder:text-white/30 focus:border-[#FF0064] focus:ring-[#FF0064]/10" />
+          <Input type="email" placeholder="Почта" value={email} onChange={(event) => setEmail(event.target.value)} required className="w-full rounded-[14px] border-white/10 bg-black px-4 py-4 text-white placeholder:text-white/30 focus:border-[#FF0064] focus:ring-[#FF0064]/10" />
         </div>
 
         <div className="space-y-2">

@@ -36,7 +36,7 @@ export default function SignIn() {
     <AuthShell
       eyebrow="Авторизация"
       title="Войти в систему"
-      subtitle="Тот же плотный и контрастный язык, что и в дашборде: минимум шума, быстрый сценарий и уверенный ритм t2."
+      subtitle="Планирование графика стало проще. Войдите, чтобы начать."
       helperLink={
         <p>
           Нет аккаунта?{" "}
@@ -53,7 +53,7 @@ export default function SignIn() {
           <div className="text-[10px] uppercase tracking-[0.18em] text-white/40">Email</div>
           <Input
             type="email"
-            placeholder="Логин"
+            placeholder="Почта"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
             required
