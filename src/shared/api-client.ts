@@ -42,9 +42,16 @@ function buildErrorMessage(errorText: string, status: number) {
   return errorText;
 }
 
-export async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
+export async function apiRequest<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<T> {
   const headers = new Headers(options.headers);
-  if (!headers.has("Content-Type") && options.body && !(options.body instanceof FormData)) {
+  if (
+    !headers.has("Content-Type") &&
+    options.body &&
+    !(options.body instanceof FormData)
+  ) {
     headers.set("Content-Type", "application/json");
   }
 
@@ -76,20 +83,28 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
 }
 
 export const api = {
-  get: <T>(path: string, init?: RequestInit) => apiRequest<T>(path, { ...init, method: "GET" }),
+  get: <T>(path: string, init?: RequestInit) =>
+    apiRequest<T>(path, { ...init, method: "GET" }),
   post: <T>(path: string, body?: BodyInit | object, init: RequestInit = {}) => {
     const payload =
-      body && typeof body === "object" && !(body instanceof FormData) && !(body instanceof URLSearchParams)
+      body &&
+      typeof body === "object" &&
+      !(body instanceof FormData) &&
+      !(body instanceof URLSearchParams)
         ? JSON.stringify(body)
         : (body as BodyInit | undefined);
     return apiRequest<T>(path, { ...init, method: "POST", body: payload });
   },
   put: <T>(path: string, body?: BodyInit | object, init: RequestInit = {}) => {
     const payload =
-      body && typeof body === "object" && !(body instanceof FormData) && !(body instanceof URLSearchParams)
+      body &&
+      typeof body === "object" &&
+      !(body instanceof FormData) &&
+      !(body instanceof URLSearchParams)
         ? JSON.stringify(body)
         : (body as BodyInit | undefined);
     return apiRequest<T>(path, { ...init, method: "PUT", body: payload });
   },
-  delete: <T>(path: string, init?: RequestInit) => apiRequest<T>(path, { ...init, method: "DELETE" }),
+  delete: <T>(path: string, init?: RequestInit) =>
+    apiRequest<T>(path, { ...init, method: "DELETE" }),
 };
