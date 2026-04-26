@@ -8,12 +8,19 @@ import { useSession } from "@/stores/session-context";
 
 export default function Home() {
   const router = useRouter();
-  const { hydrateUser } = useSession();
+  const { user, hydrateUser } = useSession();
   const [isClientReady, setIsClientReady] = useState(false);
 
   useEffect(() => {
     setIsClientReady(true);
   }, []);
+
+  useEffect(() => {
+    if (!hasToken()) {
+      router.replace("/sign_in");
+      return;
+    }
+  }, [user, router]);
 
   useEffect(() => {
     if (!isClientReady) {
