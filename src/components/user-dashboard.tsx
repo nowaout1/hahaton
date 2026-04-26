@@ -306,12 +306,12 @@ export function UserDashboard({ userName, isVerified = false }: { userName?: str
 
         setTemplates(templatesResponse);
         setDays(mapScheduleFromApi(scheduleResponse));
-        setActivity(periodResponse ? "График загружен из API." : "Активный период пока не открыт.");
+        setActivity(periodResponse ? "Загружен последний график" : "Активный период пока не открыт.");
       } catch (error) {
         setTemplates([]);
         setPeriod(null);
         setDays({});
-        setActivity(getErrorMessage(error, "Не удалось загрузить данные сотрудника из API."));
+        setActivity(getErrorMessage(error, "Не удалось загрузить данные сотрудника"));
       }
     };
 
@@ -416,7 +416,7 @@ export function UserDashboard({ userName, isVerified = false }: { userName?: str
       const created = await createTemplate(payload);
       setTemplates((current) => [created, ...current]);
       setSelectedTemplateId(String(created.id));
-      setActivity(`Шаблон "${created.name}" сохранен в API.`);
+      setActivity(`Шаблон "${created.name}" сохранен`);
       setSaveTemplateOpen(false);
       setDialog({
         open: true,
@@ -424,7 +424,7 @@ export function UserDashboard({ userName, isVerified = false }: { userName?: str
         message: `Шаблон "${created.name}" успешно сохранен.`,
       });
     } catch (error) {
-      const message = getErrorMessage(error, "Не удалось сохранить шаблон в API.");
+      const message = getErrorMessage(error, "Не удалось сохранить шаблон");
       setActivity(message);
       setDialog({
         open: true,
@@ -459,7 +459,7 @@ export function UserDashboard({ userName, isVerified = false }: { userName?: str
         message: `Шаблон "${selectedTemplate.name}" удален.`,
       });
     } catch (error) {
-      const message = getErrorMessage(error, "Не удалось удалить шаблон из API.");
+      const message = getErrorMessage(error, "Не удалось удалить шаблон");
       setActivity(message);
       setDialog({
         open: true,
@@ -500,14 +500,14 @@ export function UserDashboard({ userName, isVerified = false }: { userName?: str
     try {
       const updated = await updateMySchedule({ days: payload });
       setDays(mapScheduleFromApi(updated));
-      setActivity("График отправлен и сохранен в API.");
+      setActivity("График отправлен и сохранен");
       setDialog({
         open: true,
         title: "График отправлен",
         message: "Ваш график успешно сохранен.",
       });
     } catch (error) {
-      const message = getErrorMessage(error, "Не удалось отправить график в API.");
+      const message = getErrorMessage(error, "Не удалось отправить график в");
       setActivity(message);
       setDialog({
         open: true,
@@ -525,7 +525,7 @@ export function UserDashboard({ userName, isVerified = false }: { userName?: str
         <section className="rounded-[18px] border border-white/8 bg-[#111111] p-4">
           <div className="mb-5 space-y-2">
             <div className="text-[10px] uppercase tracking-[0.18em] text-white/40">Инструменты</div>
-            <p className="text-sm leading-6 text-white/60">Выбирайте тип дня и отмечайте даты в матрице. Данные отправляются в API только в рамках открытого периода.</p>
+            <p className="text-sm leading-6 text-white/60">Выбирайте тип дня и отмечайте даты в календаре. Данные отправляются только в рамках открытого периода.</p>
           </div>
 
           <div className="space-y-2">

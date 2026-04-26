@@ -239,7 +239,9 @@ export function ManagerDashboard({ currentUserId }: { currentUserId?: number }) 
           <div className="mb-5 flex flex-col gap-4">
             <div>
               <div className="text-[10px] uppercase tracking-[0.18em] text-white/40">Сбор графиков</div>
-              <h2 className="mt-2 text-2xl font-extrabold uppercase sm:text-3xl">Контур команды</h2>
+              <h2 className="mt-2 text-2xl font-extrabold uppercase sm:text-3xl">
+                {employees[0]?.alliance ?? "Без альянса"}
+              </h2>
               <div className="mt-3 text-[11px] uppercase tracking-[0.14em] text-white/42">Текущий период: {formatPeriod(period)}</div>
             </div>
             <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
