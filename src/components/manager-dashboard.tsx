@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { StatusDialog } from "@/components/status-dialog";
 import { fetchUsers } from "@/features/admin/model";
+import { downloadExcel, triggerBlobDownload } from "@/features/export/model";
 import { closePeriod, createPeriod, fetchCurrentPeriod } from "@/features/periods/model";
 import { fetchUserSchedule } from "@/features/schedule/model";
 import type { CollectionPeriod, ScheduleDayPayload, User } from "@/shared/types";
@@ -44,54 +45,6 @@ function mapEmployee(user: User, entries: Record<string, ScheduleDayPayload>): E
     progress: filledDays > 0 ? 100 : 24,
     entries,
   };
-}
-
-function createExcelLikeBlob(employees: Employee[]) {
-  const allDates = Array.from(
-    new Set(employees.flatMap((employee) => Object.keys(employee.entries))),
-  ).sort();
-
-  const rows = employees
-    .filter((employee) => Object.keys(employee.entries).length > 0)
-    .map((employee) => {
-      const cells = allDates
-        .map((dateKey) => {
-          const entry = employee.entries[dateKey];
-          if (!entry) return "<td></td>";
-          return `<td>${String(entry.status)}</td>`;
-        })
-        .join("");
-
-      return `<tr><td>${employee.alliance}</td><td>${employee.name}</td>${cells}</tr>`;
-    })
-    .join("");
-
-  const headerDates = allDates.map((dateKey) => `<th>${dateKey}</th>`).join("");
-  const html = `
-    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-      <head><meta charset="utf-8" /></head>
-      <body>
-        <table border="1">
-          <thead>
-            <tr><th>Альянс</th><th>Сотрудник</th>${headerDates}</tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </body>
-    </html>
-  `;
-
-  return new Blob([html], { type: "application/vnd.ms-excel;charset=utf-8;" });
-}
-
-function triggerDownload(blob: Blob, fileName: string) {
-  if (typeof window === "undefined") return;
-  const url = window.URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = fileName;
-  anchor.click();
-  window.URL.revokeObjectURL(url);
 }
 
 export function ManagerDashboard({ currentUserId }: { currentUserId?: number }) {
@@ -175,24 +128,23 @@ export function ManagerDashboard({ currentUserId }: { currentUserId?: number }) 
   );
 
   const exportExcel = async () => {
-    const submittedEmployees = employees.filter((employee) => Object.keys(employee.entries).length > 0);
-    if (!submittedEmployees.length) {
+    try {
+      const blob = await downloadExcel(period?.id);
+      triggerBlobDownload(blob, `schedule-${new Date().toISOString().slice(0, 10)}.xlsx`);
+      setActivity("Excel выгружен через endpoint /export/schedule.");
       setDialog({
         open: true,
-        title: "Нет данных",
-        message: "Для выгрузки Excel пока нет заполненных графиков.",
+        title: "Excel сформирован",
+        message: "Файл с графиками успешно сформирован и скачан.",
       });
-      return;
+    } catch (error) {
+      setActivity("Не удалось выгрузить Excel через endpoint /export/schedule.");
+      setDialog({
+        open: true,
+        title: "Ошибка выгрузки",
+        message: error instanceof Error ? error.message : "Не удалось выгрузить Excel.",
+      });
     }
-
-    const blob = createExcelLikeBlob(submittedEmployees);
-    triggerDownload(blob, `schedule-${new Date().toISOString().slice(0, 10)}.xls`);
-    setActivity("Excel выгружен из фронта на основе доступных графиков.");
-    setDialog({
-      open: true,
-      title: "Excel сформирован",
-      message: "Файл с графиками успешно сформирован и скачан.",
-    });
   };
 
   const openUserSchedule = async () => {
