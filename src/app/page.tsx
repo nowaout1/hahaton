@@ -8,14 +8,21 @@ import { useSession } from "@/stores/session-context";
 
 export default function Home() {
   const router = useRouter();
-  const { hydrateUser } = useSession();
+  const { user, hydrateUser } = useSession();
 
   useEffect(() => {
     if (!hasToken()) {
       router.replace("/sign_in");
       return;
     }
-    void hydrateUser();
+  }, [router, user]);
+
+  useEffect(() => {
+    if (!hasToken()) {
+      router.replace("/sign_in");
+      return;
+    }
+    hydrateUser();
   }, [hydrateUser, router]);
 
   if (!hasToken()) {
